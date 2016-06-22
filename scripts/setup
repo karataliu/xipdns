@@ -87,7 +87,8 @@ EOM
             || installFile('/etc/powerdns/pdns.d/pdns.pipe.conf',$pdnsConf);
         });
         regSteps($s1, "Config Service.", sub {
-            enableService('pdns');
+            runCmd('service pdns restart')
+            || enableService('pdns');
         });
         return $s1;
     },
