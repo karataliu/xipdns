@@ -269,7 +269,7 @@ sub getServiceManager
 {
      my %pm  = (
         systemctl    => {
-            enable => "systemctl enable %s && systemctl start %s",
+            enable => "systemctl enable %s",
         },
         upstart      => {
             enable => "echo %s",
