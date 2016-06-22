@@ -54,6 +54,10 @@ my %flow = (
                 -verbose    => 99);
         }
 
+    my $pdnsRepo    = << "EOM";
+deb [arch=amd64] http://repo.powerdns.com/ubuntu trusty-auth-40 main
+EOM
+
     my $pdnsConf    = << "EOM";
 launch+=pipe
 pipe-command=/usr/local/bin/xip-pdns /etc/powerdns/xip-pdns.conf
@@ -64,6 +68,12 @@ XIP_DOMAIN="$config{'domain'}"
 EOM
 
         my $s1 = [];
+        regSteps($s1, "Install required repo.", sub {
+            installFile('/etc/apt/sources.list.d/pdns.list', $pdnsRepo)
+            || runCmd('curl https://repo.powerdns.com/FD380FBB-pub.asc | apt-key add - &&')
+            || runCmd('apt-get update');
+        });
+
         regSteps($s1, "Install required packages.", sub {
             installPackageSuite("git")
             || installPackageSuite("pdns-pipe");
