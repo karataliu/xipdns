@@ -73,8 +73,11 @@ EOM
             || runCmd('cp xip-pdns/bin/xip-pdns /usr/local/bin/');
         });
         regSteps($s1, "Install config file.", sub {
-            installFile('/etc/xip-pdns.conf', $xipConf)
+            installFile('/etc/powerdns/xip-pdns.conf', $xipConf)
             || installFile('/etc/powerdns/pdns.d/pdns.pipe.conf',$pdnsConf);
+        });
+        regSteps($s1, "Config Service.", sub {
+            enableService('pdns');
         });
         return $s1;
     },
@@ -266,7 +269,7 @@ sub getServiceManager
 {
      my %pm  = (
         systemctl    => {
-            enable => "systemctl enable %s",
+            enable => "systemctl enable %s && systemctl start %s",
         },
         upstart      => {
             enable => "echo %s",
