@@ -70,7 +70,7 @@ EOM
         my $s1 = [];
         regSteps($s1, "Install required repo.", sub {
             installFile('/etc/apt/sources.list.d/pdns.list', $pdnsRepo)
-            || runCmd('curl https://repo.powerdns.com/FD380FBB-pub.asc | apt-key add - &&')
+            || runCmd('curl https://repo.powerdns.com/FD380FBB-pub.asc | apt-key add -')
             || runCmd('apt-get update');
         });
 
