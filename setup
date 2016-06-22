@@ -55,7 +55,7 @@ my %flow = (
         }
 
     my $pdnsConf    = << "EOM";
-lauch+=pipe
+launch+=pipe
 pipe-command=/usr/local/bin/xip-pdns /etc/powerdns/xip-pdns.conf
 EOM
 
