@@ -54,7 +54,12 @@ my %flow = (
                 -verbose    => 99);
         }
 
-    my $conf    = << "EOM";
+    my $pdnsConf    = << "EOM";
+lauch+=pipe
+pipe-command=/usr/local/bin/xip-pdns /etc/powerdns/xip-pdns.conf
+EOM
+
+    my $xipConf     = << "EOM";
 XIP_DOMAIN="$config{'domain'}"
 EOM
 
@@ -63,8 +68,13 @@ EOM
             installPackageSuite("git")
             || installPackageSuite("pdns-pipe");
         });
+        regSteps($s1, "Copy bin.", sub {
+            runCmd('git clone https://github.com/basecamp/xip-pdns.git')
+            || runCmd('cp xip-pdns/bin/xip-pdns /usr/local/bin/');
+        });
         regSteps($s1, "Install config file.", sub {
-            installFile('/tmp/conf', $conf);
+            installFile('/etc/xip-pdns.conf', $xipConf)
+            || installFile('/etc/powerdns/pdns.d/pdns.pipe.conf',$pdnsConf);
         });
         return $s1;
     },
