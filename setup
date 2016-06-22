@@ -69,8 +69,8 @@ EOM
             || installPackageSuite("pdns-pipe");
         });
         regSteps($s1, "Copy bin.", sub {
-            runCmd('git clone https://github.com/basecamp/xip-pdns.git')
-            || runCmd('cp xip-pdns/bin/xip-pdns /usr/local/bin/');
+            runCmd('git clone https://github.com/basecamp/xip-pdns.git ~/xip-pdns')
+            || runCmd('cp ~/xip-pdns/bin/xip-pdns /usr/local/bin/');
         });
         regSteps($s1, "Install config file.", sub {
             installFile('/etc/powerdns/xip-pdns.conf', $xipConf)
