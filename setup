@@ -49,17 +49,13 @@ my %flow = (
     install   => sub {
         unless ($config{'domain'}){
             pod2usage(
-                -msg        => "agent.serverIp not set",
+                -msg        => "domain not set",
                 -sections   => "DESCRIPTION",
                 -verbose    => 99);
         }
-        
-        my $confAgent = << "EOM";
-Hostname=$host
+
+    my $confAgent = << "EOM";
 PidFile=/var/run/zabbix/zabbix_agentd.pid
-Server=$zabbixServerIp
-ServerActive=$zabbixServerIp
-Include=$confAgentDir
 EOM
 
         my $s1 = [];
