@@ -55,9 +55,11 @@
     "publicIPAddressType": "Dynamic",
     "storageAccountName": "[concat(variables('prefix'),'sto')]",
     "vmStorageAccountContainerName": "vhds",
-    "vmName": "[concat(variables('prefix'),'dns')]",
+    "vmName": "[concat(variables('prefix'),'ns')]",
     "vmSize": "Standard_D1",
-    "storageAccountType": "Standard_LRS"
+    "storageAccountType": "Standard_LRS",
+    "VMCount": 2,
+    "VMStart": 1
   },
   "resources": [
     {
@@ -93,7 +95,11 @@
     {
       "apiVersion": "2015-06-15",
       "type": "Microsoft.Network/publicIPAddresses",
-      "name": "[variables('publicIPAddressName')]",
+      "copy": {
+        "name": "vmCountCopy",
+        "count": "[variables('VMCount')]"
+      },
+      "name": "[concat(variables('publicIPAddressName'),copyIndex(variables('VMStart')))]",
       "location": "[variables('location')]",
       "properties": {
         "publicIPAllocationMethod": "[variables('publicIPAddressType')]",
@@ -105,10 +111,14 @@
     {
       "apiVersion": "2015-06-15",
       "type": "Microsoft.Network/networkInterfaces",
-      "name": "[variables('nicName')]",
+      "copy": {
+        "name": "vmCountCopy",
+        "count": "[variables('VMCount')]"
+      },
+      "name": "[concat(variables('nicName'),copyIndex(variables('VMStart')))]",
       "location": "[variables('location')]",
       "dependsOn": [
-        "[concat('Microsoft.Network/publicIPAddresses/', variables('publicIPAddressName'))]",
+        "[concat('Microsoft.Network/publicIPAddresses/', variables('publicIPAddressName'),copyIndex(variables('VMStart')))]",
         "[concat('Microsoft.Network/virtualNetworks/', variables('virtualNetworkName'))]"
       ],
       "properties": {
@@ -118,7 +128,7 @@
             "properties": {
               "privateIPAllocationMethod": "Dynamic",
               "publicIPAddress": {
-                "id": "[resourceId('Microsoft.Network/publicIPAddresses',concat(variables('publicIPAddressName')))]"
+                "id": "[resourceId('Microsoft.Network/publicIPAddresses',concat(variables('publicIPAddressName'),copyIndex(variables('VMStart'))))]"
               },
               "subnet": {
                 "id": "[variables('subnetRef')]"
@@ -131,10 +141,14 @@
     {
       "apiVersion": "2015-06-15",
       "type": "Microsoft.Compute/virtualMachines",
-      "name": "[variables('vmName')]",
+      "copy": {
+        "name": "vmCountCopy",
+        "count": "[variables('VMCount')]"
+      },
+      "name": "[concat(variables('vmName'),copyIndex(variables('VMStart')))]",
       "location": "[variables('location')]",
       "dependsOn": [
-        "[concat('Microsoft.Network/networkInterfaces/', variables('nicName'))]",
+        "[concat('Microsoft.Network/networkInterfaces/', variables('nicName'), copyIndex(variables('VMStart')))]",
         "[variables('storageAccountName')]"
       ],
       "properties": {
@@ -142,14 +156,14 @@
           "vmSize": "[variables('vmSize')]"
         },
         "osProfile": {
-          "computerName": "[variables('vmName')]",
+          "computerName": "[concat(variables('vmName'),copyIndex(variables('VMStart')))]",
           "adminUsername": "[parameters('adminUsername')]",
           "adminPassword": "[parameters('adminPassword')]"
         },
         "storageProfile": {
           "osDisk": {
             "vhd": {
-              "uri": "[concat(reference(concat('Microsoft.Storage/storageAccounts/',variables('storageAccountName')), '2015-06-15').primaryEndpoints.blob,variables('vmStorageAccountContainerName'),'/',variables('OSDiskName'),'.vhd')]"
+              "uri": "[concat(reference(concat('Microsoft.Storage/storageAccounts/',variables('storageAccountName')), '2015-06-15').primaryEndpoints.blob,variables('vmStorageAccountContainerName'),'/',variables('OSDiskName'),copyIndex(variables('VMStart')),'.vhd')]"
             },
             "name": "osdisk",
             "caching": "ReadWrite",
@@ -160,7 +174,7 @@
         "networkProfile": {
           "networkInterfaces": [
             {
-              "id": "[resourceId('Microsoft.Network/networkInterfaces',concat(variables('nicName')))]"
+              "id": "[resourceId('Microsoft.Network/networkInterfaces',concat(variables('nicName'),copyIndex(variables('VMStart'))))]"
             }
           ]
         }
@@ -192,9 +206,13 @@
     }
   ],
   "outputs": {
-    "ip": {
+    "NS1 IP": {
       "type": "string",
-      "value": "[reference(variables('publicIPAddressName')).ipAddress]"
+      "value": "[reference(concat(variables('publicIPAddressName'),'1')).ipAddress]"
+    },
+    "NS2 IP": {
+      "type": "string",
+      "value": "[reference(concat(variables('publicIPAddressName'),'2')).ipAddress]"
     }
   }
 }
