@@ -207,7 +207,7 @@
     },
     {
       "apiVersion": "2015-01-01",
-      "name": "[concat('ipQuery', copyIndex())]",
+      "name": "[concat('ipQuery', copyIndex(variables('VMStart')))]",
       "type": "Microsoft.Resources/deployments",
       "copy": {
         "name": "vmCountCopy",
@@ -223,7 +223,7 @@
           "contentVersion": "1.0.0.0"
         },
         "parameters": {
-          "virtualNetworkName": {
+          "publicIPAddressName": {
             "value": "[concat(variables('publicIPAddressName'),copyIndex(variables('VMStart')))]"
           }
         }
@@ -233,11 +233,11 @@
   "outputs": {
     "NS1 IP": {
       "type": "string",
-      "value": "[reference(concat(variables('publicIPAddressName'),'1')).ipAddress]"
+      "value": "[reference('ipQuery1').outputs.ip]"
     },
     "NS2 IP": {
       "type": "string",
-      "value": "[reference(concat(variables('publicIPAddressName'),'2')).ipAddress]"
+      "value": "[reference('ipQuery1').outputs.ip]"
     }
   }
 }

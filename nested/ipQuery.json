@@ -10,7 +10,6 @@
       "defaultValue": "doliud2publicip1"
     }
   },
-  "variables": {},
   "resources": [],
   "outputs": {
     "ip": {

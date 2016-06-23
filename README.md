@@ -16,6 +16,6 @@ Deployment parameters:
 
 | Output                | Description                                       |
 | -------------         | -------------                                     |
-| NS1                   | IP Address for primary dns server                 |
-| NS2                   | IP Address for secondary dns server               |
+| NS1 IP                | IP Address for primary dns server                 |
+| NS2 IP                | IP Address for secondary dns server               |
 
