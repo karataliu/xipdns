@@ -194,7 +194,7 @@
   "outputs": {
     "ip": {
       "type": "string",
-      "value": "[variables('publicIPAddressName').ipAddress]"
+      "value": "[reference(variables('publicIPAddressName')).ipAddress]"
     }
   }
 }
