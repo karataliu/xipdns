@@ -14,3 +14,8 @@ Deployment parameters:
 | -------------         | -------------                                     |
 | domain                | The top level domain.                             |
 
+| Output                | Description                                       |
+| -------------         | -------------                                     |
+| NS1                   | IP Address for primary dns server                 |
+| NS2                   | IP Address for secondary dns server               |
+

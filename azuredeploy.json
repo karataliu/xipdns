@@ -24,7 +24,8 @@
       "type": "string",
       "metadata": {
         "description": "Top domain for resolving"
-      }
+      },
+      "defaultValue": "xip.io"
     },
     "_artifactsLocation": {
       "type": "string",
@@ -104,7 +105,7 @@
       "properties": {
         "publicIPAllocationMethod": "[variables('publicIPAddressType')]",
         "dnsSettings": {
-          "domainNameLabel": "[variables('vmName')]"
+          "domainNameLabel": "[concat(variables('vmName'),copyIndex(variables('VMStart')))]"
         }
       }
     },
@@ -203,6 +204,30 @@
           }
         }
       ]
+    },
+    {
+      "apiVersion": "2015-01-01",
+      "name": "[concat('ipQuery', copyIndex())]",
+      "type": "Microsoft.Resources/deployments",
+      "copy": {
+        "name": "vmCountCopy",
+        "count": "[variables('VMCount')]"
+      },
+      "dependsOn": [
+        "[concat(variables('vmName'),copyIndex(variables('VMStart')))]"
+      ],
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[concat(parameters('_artifactsLocation'), '/nested/ipQuery.json')]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "virtualNetworkName": {
+            "value": "[concat(variables('publicIPAddressName'),copyIndex(variables('VMStart')))]"
+          }
+        }
+      }
     }
   ],
   "outputs": {
