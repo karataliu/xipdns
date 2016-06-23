@@ -233,11 +233,11 @@
   "outputs": {
     "NS1 IP": {
       "type": "string",
-      "value": "[reference('ipQuery1').outputs.ip]"
+      "value": "[reference('ipQuery1').outputs.ip.value]"
     },
     "NS2 IP": {
       "type": "string",
-      "value": "[reference('ipQuery1').outputs.ip]"
+      "value": "[reference('ipQuery2').outputs.ip.value]"
     }
   }
 }
