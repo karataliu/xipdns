@@ -186,7 +186,7 @@
           "name": "configDnsServer",
           "location": "[variables('location')]",
           "dependsOn": [
-            "[variables('vmName')]"
+            "[concat(variables('vmName'),copyIndex(variables('VMStart')))]"
           ],
           "properties": {
             "publisher": "Microsoft.OSTCExtensions",
